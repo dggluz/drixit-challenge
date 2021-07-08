@@ -16,3 +16,7 @@ emailForm.addEventListener('submit', e => {
     
     passwordForm.style.display = '';
 });
+
+export const foo = null;
+
+console.log('foo');
