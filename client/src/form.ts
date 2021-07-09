@@ -1,3 +1,5 @@
+const html = require('./form.html').default;
+
 const getById = (id: string) => {
     const ret = document.getElementById(id);
 
@@ -19,4 +21,4 @@ emailForm.addEventListener('submit', e => {
 
 export const foo = null;
 
-console.log('foo');
+console.log(html);
