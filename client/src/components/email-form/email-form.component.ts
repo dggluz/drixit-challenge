@@ -12,6 +12,16 @@ export class EmailFormComponent extends Observable<{
 
     constructor () {
         super();
+
+        this.bindEvents();
+    }
+
+    appendTo($wrapper: JQuery<HTMLElement>) {
+        $wrapper.append(this.$dom);
+        return this;
+    }
+
+    private bindEvents () {
         this.$get('form').on('submit', e => {
             e.preventDefault();
 
@@ -23,11 +33,6 @@ export class EmailFormComponent extends Observable<{
 
             this.setEditableState();
         });
-    }
-
-    appendTo($wrapper: JQuery<HTMLElement>) {
-        $wrapper.append(this.$dom);
-        return this;
     }
 
     private setNotEditableState () {
