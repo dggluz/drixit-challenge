@@ -29,7 +29,7 @@ const $get = ($wrapper: JQuery<HTMLElement>, selector: string) => {
     return $ret;
 };
 
-export const renderUserInfo = ($wrapper: JQuery<HTMLElement>, userInfo: ClientUser) => {
+export const renderUserInfo = (userInfo: ClientUser) => {
     const $dom = $(html);
 
     $get($dom, '.name').text(`${userInfo.name} ${userInfo.surname}`);
@@ -39,8 +39,5 @@ export const renderUserInfo = ($wrapper: JQuery<HTMLElement>, userInfo: ClientUs
     $get($dom, '.email').text(userInfo.email);
     $get($dom, '.role').text(userInfo.role === 'admin' ? 'Admin' : 'Regular user');
 
-    $wrapper
-        .empty()
-        .append($dom)
-    ;
+    return $dom;
 };
