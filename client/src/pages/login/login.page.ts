@@ -1,3 +1,4 @@
+import { EmailFormComponent } from '../../components/email-form/email-form.component';
 import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
@@ -11,14 +12,9 @@ export const renderLogin = (model: Model) => {
 
     const $get = $getBySelector($dom);
 
-    const $emailForm = $get('.email-form');
+    new EmailFormComponent().appendTo($get('.email-wrapper'));
+
     const $passwordForm = $get('.password-form');
-
-    $emailForm.on('submit', e => {
-        e.preventDefault();
-
-        $passwordForm.removeClass('invisible');
-    });
 
     $passwordForm.on('submit', e => {
         e.preventDefault();
