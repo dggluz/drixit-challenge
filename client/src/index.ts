@@ -1,3 +1,4 @@
+import { renderLogin } from './pages/login/login.page';
 import { renderUserInfo } from './pages/user-info/user-info.page';
 
 const showPage = (page: JQuery<HTMLElement>) => {
@@ -6,6 +7,7 @@ const showPage = (page: JQuery<HTMLElement>) => {
         .append(page)
 };
 
+const loginPage = renderLogin();
 
 const userInfoPage = renderUserInfo({
 	id: "it-drixit-1",
@@ -17,4 +19,4 @@ const userInfoPage = renderUserInfo({
 	role: "admin"
 });
 
-showPage(userInfoPage);
+showPage(loginPage);
