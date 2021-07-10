@@ -1,17 +1,8 @@
 import { ClientUser } from '../../model/model';
+import { $get } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
 
 const html = readHtmlFile(require('./user-info.page.html'));
-
-const $get = ($wrapper: JQuery<HTMLElement>, selector: string) => {
-    const $ret = $wrapper.find(selector);
-
-    if ($ret.length !== 1) {
-        throw new Error(`Couldn't find element matching the selector "${selector}"`);
-    }
-
-    return $ret;
-};
 
 export const renderUserInfo = (userInfo: ClientUser) => {
     const $dom = $(html);
