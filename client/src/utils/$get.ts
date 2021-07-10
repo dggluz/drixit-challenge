@@ -1,4 +1,4 @@
-export const $get = ($wrapper: JQuery<HTMLElement>, selector: string) => {
+export const $getBySelector = ($wrapper: JQuery<HTMLElement>) => (selector: string) => {
     const $ret = $wrapper.find(selector);
 
     if ($ret.length !== 1) {
