@@ -1,3 +1,4 @@
+import { model } from './model/model';
 import { renderLogin } from './pages/login/login.page';
 import { renderUserInfo } from './pages/user-info/user-info.page';
 
@@ -7,7 +8,7 @@ const showPage = (page: JQuery<HTMLElement>) => {
         .append(page)
 };
 
-const loginPage = renderLogin();
+const loginPage = renderLogin(model);
 
 const userInfoPage = renderUserInfo({
 	id: "it-drixit-1",
