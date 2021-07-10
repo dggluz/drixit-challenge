@@ -1,4 +1,5 @@
 import { EmailFormComponent } from '../../components/email-form/email-form.component';
+import { PasswordFormComponent } from '../../components/password-form/password-form.component';
 import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
@@ -11,33 +12,24 @@ export const renderLogin = (model: Model) => {
     const $dom = $(html);
 
     const $get = $getBySelector($dom);
+    
+    const $passwordWrapper = $get('.password-wrapper');
 
     const showPassword = () => {
-        $get('.password-form').removeClass('invisible');
+        $passwordWrapper.removeClass('invisible');
     };
 
     const hidePassword = () => {
-        $get('.password-form').addClass('invisible');
+        $passwordWrapper.addClass('invisible');
     }
 
     new EmailFormComponent()
         .subscribe('set-editable', hidePassword)
         .subscribe('set-not-editable', showPassword)
         .appendTo($get('.email-wrapper'));
-
-    const $passwordForm = $get('.password-form');
-
-    $passwordForm.on('submit', e => {
-        e.preventDefault();
-
-        $dom.find('input, button[type=submit]').attr('disabled', 'disabled');
-        $get('.password-form button[type=submit] .active-state').addClass('d-none');
-        $get('.password-form button[type=submit] .loading-state').removeClass('d-none');
-
-        requestToken()
-            .then()
-        ;
-    });
+    
+    new PasswordFormComponent()
+        .appendTo($passwordWrapper);
 
     return $dom;
 };
