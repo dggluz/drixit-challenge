@@ -10,6 +10,16 @@ const getById = (id: string) => {
     return ret;
 }
 
+
+export class FormComponent {
+    $dom: JQuery<HTMLElement>;
+    constructor () {
+        this.$dom = $(html).appendTo('#app');
+    }
+}
+
+new FormComponent();
+
 const emailForm = getById('email-form');
 const passwordForm = getById('password-form');
 
@@ -18,7 +28,3 @@ emailForm.addEventListener('submit', e => {
     
     passwordForm.style.display = '';
 });
-
-export const foo = null;
-
-console.log(html);
