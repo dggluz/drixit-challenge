@@ -12,7 +12,18 @@ export const renderLogin = (model: Model) => {
 
     const $get = $getBySelector($dom);
 
-    new EmailFormComponent().appendTo($get('.email-wrapper'));
+    const showPassword = () => {
+        $get('.password-form').removeClass('invisible');
+    };
+
+    const hidePassword = () => {
+        $get('.password-form').addClass('invisible');
+    }
+
+    new EmailFormComponent()
+        .subscribe('set-editable', hidePassword)
+        .subscribe('set-not-editable', showPassword)
+        .appendTo($get('.email-wrapper'));
 
     const $passwordForm = $get('.password-form');
 
