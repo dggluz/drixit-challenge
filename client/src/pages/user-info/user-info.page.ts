@@ -1,7 +1,7 @@
 import { ClientUser } from '../../model/model';
-import { str } from '../../type-validation/str';
+import { readHtmlFile } from '../../utils/read-html-file';
 
-const html = str(require('./user-info.page.html').default);
+const html = readHtmlFile(require('./user-info.page.html'));
 
 const $get = ($wrapper: JQuery<HTMLElement>, selector: string) => {
     const $ret = $wrapper.find(selector);
