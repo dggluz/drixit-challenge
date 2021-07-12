@@ -4,6 +4,8 @@ import { Observable } from '../../utils/observable';
 import { readHtmlFile } from '../../utils/read-html-file';
 
 const html = readHtmlFile(require('./email-form.component.html'));
+// Include styles
+require('./email-form.component.less');
 
 export class EmailFormComponent extends Observable<{
     'set-editable': string;
@@ -41,6 +43,7 @@ export class EmailFormComponent extends Observable<{
     }
 
     private setNotEditableState () {
+        this.$get('.input-wrapper').addClass('input-group')
         this.$get('input').attr('disabled', 'disabled');
         this.$get('.edit').removeClass('d-none');
         this.$get('button[type=submit]').addClass('d-none');
@@ -51,6 +54,7 @@ export class EmailFormComponent extends Observable<{
     }
 
     private setEditableState () {
+        this.$get('.input-wrapper').removeClass('input-group')
         this.$get('input').removeAttr('disabled');
         this.$get('.edit').addClass('d-none');
         this.$get('button[type=submit]').removeClass('d-none');
