@@ -1,3 +1,4 @@
+import { str } from '../../type-validation/str';
 import { $getBySelector } from '../../utils/$get';
 import { Observable } from '../../utils/observable';
 import { readHtmlFile } from '../../utils/read-html-file';
@@ -5,7 +6,7 @@ import { readHtmlFile } from '../../utils/read-html-file';
 const html = readHtmlFile(require('./email-form.component.html'));
 
 export class EmailFormComponent extends Observable<{
-    'set-editable': void;
+    'set-editable': string;
     'set-not-editable': void;
 }> {
     private $dom = $(html);
@@ -14,6 +15,10 @@ export class EmailFormComponent extends Observable<{
         super();
 
         this.bindEvents();
+    }
+
+    getEmail () {
+        return str(this.$get('#email').val());
     }
 
     appendTo($wrapper: JQuery<HTMLElement>) {
@@ -50,7 +55,7 @@ export class EmailFormComponent extends Observable<{
         this.$get('.edit').addClass('d-none');
         this.$get('button[type=submit]').removeClass('d-none');
 
-        this._notifyObservers('set-editable', undefined);
+        this._notifyObservers('set-editable', this.getEmail());
 
         return this;
     }

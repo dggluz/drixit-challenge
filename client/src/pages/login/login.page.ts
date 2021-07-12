@@ -4,7 +4,10 @@ import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
 
-const requestToken = () => Promise.resolve({ jwt: 'jwt-token' });
+const requestToken = (email: string, password: string) => {
+    console.log(email, password);
+    return Promise.resolve({ jwt: 'jwt-token' });
+};
 
 const html = readHtmlFile(require('./login.page.html'));
 
@@ -23,12 +26,15 @@ export const renderLogin = (model: Model) => {
         $passwordWrapper.addClass('invisible');
     }
 
-    new EmailFormComponent()
+    const emailForm = new EmailFormComponent()
         .subscribe('set-editable', hidePassword)
         .subscribe('set-not-editable', showPassword)
         .appendTo($get('.email-wrapper'));
     
-    new PasswordFormComponent()
+    const passwordForm = new PasswordFormComponent()
+        .subscribe('submit', password => {
+            requestToken(emailForm.getEmail(), password);
+        })
         .appendTo($passwordWrapper);
 
     return $dom;
