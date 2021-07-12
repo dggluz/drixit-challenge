@@ -29,13 +29,18 @@ export class EmailFormComponent extends Observable<{
     }
 
     focus () {
-        this.$getEmail().trigger('focus');
+        setTimeout(() => this.$getEmail().trigger('focus'), 50);
         return this;
     }
 
     disable () {
         this.setNotEditableState();
         this.$getEdit().attr('disabled', 'disabled');
+        return this;
+    }
+
+    enable () {
+        this.$getEdit().removeAttr('disabled');
         return this;
     }
 

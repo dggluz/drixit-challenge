@@ -29,6 +29,14 @@ export class PasswordFormComponent extends Observable<{
         return this;
     }
 
+    setEditableState () {
+        this.$dom.find('input, button[type=submit]').removeAttr('disabled');
+        this.$get('.password-form button[type=submit] .active-state').removeClass('d-none');
+        this.$get('.password-form button[type=submit] .loading-state').addClass('d-none');
+
+        return this;
+    }
+
     private $getPassword() {
         return this.$get('#password');
     }
@@ -44,11 +52,15 @@ export class PasswordFormComponent extends Observable<{
             this.setLoadingState();
             this._notifyObservers('submit', this.getPassword());
         });
+
+        return this;
     }
 
     private setLoadingState() {
         this.$dom.find('input, button[type=submit]').attr('disabled', 'disabled');
         this.$get('.password-form button[type=submit] .active-state').addClass('d-none');
         this.$get('.password-form button[type=submit] .loading-state').removeClass('d-none');
+
+        return this;
     }
 }

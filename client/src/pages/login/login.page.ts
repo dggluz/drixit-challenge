@@ -6,7 +6,9 @@ import { readHtmlFile } from '../../utils/read-html-file';
 
 const requestToken = (email: string, password: string) => {
     console.log(email, password);
-    return Promise.resolve({ jwt: 'jwt-token' });
+    return new Promise<{ jwt: string }>(resolve => {
+        setTimeout(() => resolve({ jwt: 'jwt-token' }), 2000)
+    });
 };
 
 const html = readHtmlFile(require('./login.page.html'));
@@ -35,7 +37,14 @@ export const renderLogin = (model: Model) => {
     const passwordForm = new PasswordFormComponent()
         .subscribe('submit', password => {
             emailForm.disable();
-            requestToken(emailForm.getEmail(), password);
+            requestToken(emailForm.getEmail(), password)
+                .then(token => {
+                    console.log(token);
+                    emailForm.enable();
+                    passwordForm
+                        .setEditableState()
+                        .focus();
+                });
         })
         .appendTo($passwordWrapper);
 
