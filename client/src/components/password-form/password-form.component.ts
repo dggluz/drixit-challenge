@@ -16,7 +16,7 @@ export class PasswordFormComponent extends Observable<{
     }
 
     getPassword() {
-        return str(this.$get('#password').val());
+        return str(this.$getPassword().val());
     }
 
     appendTo ($wrapper: JQuery<HTMLElement>) {
@@ -25,9 +25,12 @@ export class PasswordFormComponent extends Observable<{
     }
 
     focus () {
-        console.log(this);
-        this.$get('#password').trigger('focus');
+        this.$getPassword().trigger('focus');
         return this;
+    }
+
+    private $getPassword() {
+        return this.$get('#password');
     }
 
     private $get (selector: string) {

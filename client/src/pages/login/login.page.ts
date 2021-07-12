@@ -34,6 +34,7 @@ export const renderLogin = (model: Model) => {
     
     const passwordForm = new PasswordFormComponent()
         .subscribe('submit', password => {
+            emailForm.disable();
             requestToken(emailForm.getEmail(), password);
         })
         .appendTo($passwordWrapper);

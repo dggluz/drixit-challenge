@@ -20,7 +20,7 @@ export class EmailFormComponent extends Observable<{
     }
 
     getEmail () {
-        return str(this.$get('#email').val());
+        return str(this.$getEmail().val());
     }
 
     appendTo($wrapper: JQuery<HTMLElement>) {
@@ -29,8 +29,18 @@ export class EmailFormComponent extends Observable<{
     }
 
     focus () {
-        this.$get('#email').trigger('focus');
+        this.$getEmail().trigger('focus');
         return this;
+    }
+
+    disable () {
+        this.setNotEditableState();
+        this.$getEdit().attr('disabled', 'disabled');
+        return this;
+    }
+
+    private $getEmail() {
+        return this.$get('#email');
     }
 
     private bindEvents () {
@@ -40,18 +50,22 @@ export class EmailFormComponent extends Observable<{
             this.setNotEditableState();
         });
 
-        this.$get('.edit button').on('click', e => {
+        this.$getEdit().on('click', e => {
             e.preventDefault();
 
             this.setEditableState();
         });
     }
 
+    private $getEdit() {
+        return this.$get('.edit button');
+    }
+
     private setNotEditableState () {
         this.$get('.input-wrapper').addClass('input-group')
-        this.$get('input').attr('disabled', 'disabled');
+        this.$getEmail().attr('disabled', 'disabled');
         this.$get('.edit').removeClass('d-none');
-        this.$get('button[type=submit]').addClass('d-none');
+        this.$getNext().addClass('d-none');
 
         this._notifyObservers('set-not-editable', undefined);
 
@@ -60,15 +74,19 @@ export class EmailFormComponent extends Observable<{
 
     private setEditableState () {
         this.$get('.input-wrapper').removeClass('input-group')
-        this.$get('input').removeAttr('disabled');
+        this.$getEmail().removeAttr('disabled');
         this.$get('.edit').addClass('d-none');
-        this.$get('button[type=submit]').removeClass('d-none');
+        this.$getNext().removeClass('d-none');
 
         this.focus();
 
         this._notifyObservers('set-editable', this.getEmail());
 
         return this;
+    }
+
+    private $getNext() {
+        return this.$get('button[type=submit]');
     }
 
     private $get (selector: string) {
