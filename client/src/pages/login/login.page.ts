@@ -20,6 +20,7 @@ export const renderLogin = (model: Model) => {
 
     const showPassword = () => {
         $passwordWrapper.removeClass('invisible');
+        passwordForm.focus();
     };
 
     const hidePassword = () => {

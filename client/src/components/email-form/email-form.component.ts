@@ -28,6 +28,11 @@ export class EmailFormComponent extends Observable<{
         return this;
     }
 
+    focus () {
+        this.$get('#email').trigger('focus');
+        return this;
+    }
+
     private bindEvents () {
         this.$get('form').on('submit', e => {
             e.preventDefault();
@@ -58,6 +63,8 @@ export class EmailFormComponent extends Observable<{
         this.$get('input').removeAttr('disabled');
         this.$get('.edit').addClass('d-none');
         this.$get('button[type=submit]').removeClass('d-none');
+
+        this.focus();
 
         this._notifyObservers('set-editable', this.getEmail());
 

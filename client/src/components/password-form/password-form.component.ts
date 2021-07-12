@@ -24,6 +24,12 @@ export class PasswordFormComponent extends Observable<{
         return this;
     }
 
+    focus () {
+        console.log(this);
+        this.$get('#password').trigger('focus');
+        return this;
+    }
+
     private $get (selector: string) {
         return $getBySelector (this.$dom) (selector);
     }
