@@ -7,17 +7,24 @@ import { readHtmlFile } from '../../utils/read-html-file';
 
 const requestToken = (email: string, password: string) => {
     console.log(email, password);
-    return new Promise<{ jwt: string }>((resolve, reject) => {
-        setTimeout(() =>
-            reject('There was an error trying to get the token ')
-            // resolve({ jwt: 'jwt-token' })
-        , 2000)
-    });
+
+    return fetch('http://localhost:8080/api/v0/authenticate', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    })
+        .then(res => res.json())
+    ;
 };
 
 const html = readHtmlFile(require('./login.page.html'));
 
-export const renderLogin = (model: Model) => {
+export const renderLogin = (model: Model, callback: () => void) => {
     const $dom = $(html);
 
     const $get = $getBySelector($dom);
@@ -70,6 +77,15 @@ export const renderLogin = (model: Model) => {
             emptyError();
 
             requestToken(emailForm.getEmail(), password)
+                .then(res =>
+                    res.status === 'ERROR' ?
+                        Promise.reject(new Error(res)) :
+                        Promise.resolve(res)
+                )
+                .then(res => {
+                    console.log(res)
+                    callback();
+                })
                 .catch(showError)
                 .finally(enableForm);
         })
