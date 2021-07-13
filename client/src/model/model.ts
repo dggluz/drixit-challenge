@@ -13,15 +13,15 @@ export interface ClientUser {
 
 
 class _Model extends Observable<{
-	'set-token': void;
+	'set-token': string;
 	'reset-user': void;
 }> {
 	private _user?: ClientUser;
-	private token?: string;
+	private _token?: string;
 
-	setToken (user: ClientUser) {
-		this._user = user;
-		this._notifyObservers('set-token', undefined);
+	setToken (token: string) {
+		this._token = token;
+		this._notifyObservers('set-token', this.getToken());
 		return this;
 	}
 
@@ -29,6 +29,13 @@ class _Model extends Observable<{
 		this._user = undefined;
 		this._notifyObservers('reset-user', undefined);
 		return this;
+	}
+
+	getToken (): string {
+		if (!this._token) {
+			throw new Error('There is no token');
+		}
+		return this._token;
 	}
 
 	getUser (): ClientUser {

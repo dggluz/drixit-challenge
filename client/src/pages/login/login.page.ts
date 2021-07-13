@@ -4,7 +4,7 @@ import { PasswordFormComponent } from '../../components/password-form/password-f
 import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
-import { requestToken } from '../../persistence/persistence';
+import { requestToken } from '../../services/service';
 
 const html = readHtmlFile(require('./login.page.html'));
 
@@ -61,11 +61,6 @@ export const renderLogin = (model: Model) => {
             emptyError();
 
             requestToken(emailForm.getEmail(), password)
-                .then(res =>
-                    res.status === 'ERROR' ?
-                        Promise.reject(new Error(res)) :
-                        Promise.resolve(res)
-                )
                 .then(res => {
                     console.log(res)
                     model.setToken(res.jwt);
