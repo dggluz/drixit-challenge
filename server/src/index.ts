@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { resolve } from 'path';
 import { createServer, Next, Request, Response, plugins } from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
@@ -52,8 +52,45 @@ const authenticate = (req: Request, res: Response, next: Next) => {
 };
 
 const getUserInfo = (req: Request, res: Response, next: Next) => {
-    res.json(users[0]);
-    next();
+    const authHeader = req.header('Authorization', '');
+    const bearer = authHeader.slice(0, 7);
+    const token = authHeader.slice(7);
+
+    if (bearer !== 'Bearer ') {
+        res.json(401, {
+            errorCode: 'NOT_AUTHENTICATED',
+            status: 'ERROR'
+        });
+        return next();
+    }
+
+    verify(token, JWT_PRIVATE_KEY, (err, payload) => {
+        if (err) {
+            res.json(401, {
+                errorCode: 'INVALID_JWT',
+                status: 'ERROR'
+            });
+            return next();
+        }
+
+        // TODO: send error if fails
+        const data = objOf({
+            email: str
+        })(payload);
+
+        const user = users.find(({ email }) => email === data.email);
+
+        if (!user) {
+            res.send(404, {
+                errorCode: 'INEXISTENT_USER',
+                status: 'ERROR'
+            })
+            return next();
+        }
+
+        res.send(user);
+        next();
+    });
 };
 
 const server = createServer();
