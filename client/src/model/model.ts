@@ -70,3 +70,19 @@ export const setUser = (user: ClientUser) =>
 ;
 
 export const init = () => notifyObservers(getModel());
+
+
+type DiscriminateModel<S extends Modelo['state']> = Extract<Modelo, Record<'state', S>>;
+
+const isState = <S extends Modelo['state']> (state: S, model: Modelo): model is DiscriminateModel<S> =>
+		model.state === state
+;
+
+export const subscribeTo = <S extends Modelo['state']> (state: S, callback: (model: DiscriminateModel<S>) => void) => {
+		subscribe(model => {
+			if (isState(state, model)) {
+				callback(model);
+			}
+		});
+	}
+;

@@ -1,4 +1,4 @@
-import { init, Modelo, setUser, subscribe } from './model/model';
+import { init, Modelo, setUser, subscribe, subscribeTo } from './model/model';
 import { renderLogin } from './pages/login/login.page';
 import { renderUserInfo } from './pages/user-info/user-info.page';
 
@@ -7,21 +7,6 @@ const showPage = (page: JQuery<HTMLElement>) => {
         .empty()
         .append(page)
 };
-
-type DiscriminateModel<S extends Modelo['state']> = Extract<Modelo, Record<'state', S>>;
-
-const isState = <S extends Modelo['state']> (state: S, model: Modelo): model is DiscriminateModel<S> =>
-		model.state === state
-;
-
-const subscribeTo = <S extends Modelo['state']> (state: S, callback: (model: DiscriminateModel<S>) => void) => {
-		subscribe(model => {
-			if (isState(state, model)) {
-				callback(model);
-			}
-		});
-	}
-;
 
 subscribeTo('not-logged', model => {
 	showPage(renderLogin());
