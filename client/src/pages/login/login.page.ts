@@ -4,27 +4,11 @@ import { PasswordFormComponent } from '../../components/password-form/password-f
 import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
-
-const requestToken = (email: string, password: string) => {
-    console.log(email, password);
-
-    return fetch('http://localhost:8080/api/v0/authenticate', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-            email,
-            password
-        })
-    })
-        .then(res => res.json())
-    ;
-};
+import { requestToken } from '../../persistence/persistence';
 
 const html = readHtmlFile(require('./login.page.html'));
 
-export const renderLogin = (model: Model, callback: () => void) => {
+export const renderLogin = (model: Model) => {
     const $dom = $(html);
 
     const $get = $getBySelector($dom);
@@ -84,7 +68,7 @@ export const renderLogin = (model: Model, callback: () => void) => {
                 )
                 .then(res => {
                     console.log(res)
-                    callback();
+                    model.setToken(res.jwt);
                 })
                 .catch(showError)
                 .finally(enableForm);

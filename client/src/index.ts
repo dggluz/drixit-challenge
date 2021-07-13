@@ -21,3 +21,6 @@ const userInfoPage = renderUserInfo({
 });
 
 showPage(loginPage);
+
+model.subscribe('set-token', () => showPage(userInfoPage));
+model.subscribe('reset-user', () => showPage(loginPage));
