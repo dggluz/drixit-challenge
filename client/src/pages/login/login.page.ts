@@ -3,7 +3,7 @@ import { ErrorLabelComponent } from '../../components/error-label/error-label.co
 import { PasswordFormComponent } from '../../components/password-form/password-form.component';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
-import { requestToken } from '../../services/service';
+import { login } from '../../services/service';
 import { setToken } from '../../model/model';
 
 const html = readHtmlFile(require('./login.page.html'));
@@ -60,7 +60,7 @@ export const renderLogin = () => {
             disableForm();
             emptyError();
 
-            requestToken(emailForm.getEmail(), password)
+            login(emailForm.getEmail(), password)
                 .then(res => {
                     console.log(res)
                     setToken(res.jwt);
