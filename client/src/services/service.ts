@@ -43,8 +43,7 @@ export const getUser = (token: string) =>
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-type': 'application/json'
-        },
-        credentials: 'include',
+        }
     })
         .then(res => res.json())
         .then(handleError)

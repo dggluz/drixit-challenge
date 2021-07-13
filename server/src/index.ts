@@ -97,12 +97,9 @@ const server = createServer();
 
 const cors = corsMiddleware({
     preflightMaxAge: 5,
-    // TODO: change when serving from docker
     origins: ['*'],
-    // origins: ['http://api.myapp.com', 'http://web.myapp.com'],
-    // allowHeaders: ['API-Token'],
-    // exposeHeaders: ['API-Token-Expiry'],
-    allowCredentialsAllOrigins: true
+    allowHeaders: ['Authorization'],
+    allowCredentialsAllOrigins: true,
 });
 
 server.pre(cors.preflight) 
