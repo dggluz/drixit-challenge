@@ -2,12 +2,19 @@ import { createServer, Next, Request, Response, plugins } from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
 import { objOf } from './type-validation/obj-of';
 import { str } from './type-validation/str';
+import { users } from './users';
 
 const ping = (req: Request, res: Response, next: Next) => {
     console.log('Ping');
     res.send('pong');
     next();
 };
+
+const lookupUser = (email: string, password: string) =>
+    users.find(user =>
+        user.email === email && user.password === password
+    )
+;
 
 const authenticate = (req: Request, res: Response, next: Next) => {
     console.log('Authenticate');
@@ -17,7 +24,17 @@ const authenticate = (req: Request, res: Response, next: Next) => {
         password: str
     }) (req.body);
     
-    console.log(req.body);
+    console.log(body);
+
+    const user = lookupUser(body.email, body.password);
+
+    if (!user) {
+        res.json(400, {
+            errorCode: 'INVALID_USER_AUTH',
+            status: 'ERROR'
+        });
+        return next();
+    }
 
     res.json({ jwt: 'jwt-token' });
     next();
