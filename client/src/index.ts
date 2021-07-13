@@ -1,4 +1,5 @@
-import { init, Modelo, setUser, subscribe, subscribeTo } from './model/model';
+import { init, subscribeTo } from './model/model';
+import { renderGetUserInfo } from './pages/get-user-info/get-user-info.page';
 import { renderLogin } from './pages/login/login.page';
 import { renderUserInfo } from './pages/user-info/user-info.page';
 
@@ -12,21 +13,13 @@ subscribeTo('not-logged', model => {
 	showPage(renderLogin());
 });
 
-subscribeTo('jwt-available', model => {
-	// Mock set user
-	setTimeout(() => setUser({
-		id: "it-drixit-1",
-		avatar: "https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png",
-		email: "it@drixit.com",
-		name: "IT",
-		surname: "Drixit",
-		age: 25,
-		role: "admin"
-	}), 2000);
-	console.log('jwt available', model.jwt);
-});
+subscribeTo('jwt-available', model =>
+	showPage(renderGetUserInfo(model.jwt))
+);
 
-subscribeTo('logged', model => showPage(renderUserInfo(model.user)));
+subscribeTo('logged', model =>
+	showPage(renderUserInfo(model.user))
+);
 
 init();
 
