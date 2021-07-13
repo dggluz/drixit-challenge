@@ -1,5 +1,3 @@
-import { Observable } from '../utils/observable';
-
 export interface ClientUser {
 	id: string;
 	avatar: string;
@@ -11,45 +9,64 @@ export interface ClientUser {
 }
 
 
+type NotLogged = {
+	state: 'not-logged';
+};
 
-class _Model extends Observable<{
-	'set-token': string;
-	'reset-user': void;
-}> {
-	private _user?: ClientUser;
-	private _token?: string;
+type JwtAvailable = {
+	state: 'jwt-available';
+	jwt: string;
+};
 
-	setToken (token: string) {
-		this._token = token;
-		this._notifyObservers('set-token', this.getToken());
-		return this;
-	}
+type Logged = {
+	state: 'logged';
+	user: ClientUser;
+};
 
-	resetUser () {
-		this._user = undefined;
-		this._notifyObservers('reset-user', undefined);
-		return this;
-	}
+export type Modelo = NotLogged | JwtAvailable | Logged;
 
-	getToken (): string {
-		if (!this._token) {
-			throw new Error('There is no token');
-		}
-		return this._token;
-	}
+let modelo: Modelo = {
+	state: 'not-logged'
+};
 
-	getUser (): ClientUser {
-		if (!this._user) {
-			throw new Error('There is no user');
-		}
-		return this._user;
-	}
+const getModel = () =>
+	modelo
+;
 
-	isLogged () {
-		return typeof this._user !== 'undefined';
-	}
-}
+const setModel = (newModel: Modelo) => {
+	modelo = newModel;
 
-export const model = new _Model();
+	notifyObservers(getModel());
+};
 
-export type Model = typeof model;
+const observers: ((model: Modelo) => void)[] = [];
+
+const notifyObservers = (model: Modelo) => {
+	observers.forEach(callback => callback(model));
+};
+
+export const subscribe = (callback: (model: Modelo) => void) => {
+	observers.push(callback);
+};
+
+export const reset = () =>
+	setModel({
+		state: 'not-logged'
+	})
+;
+
+export const setToken = (token: string) =>
+	setModel({
+		state: 'jwt-available',
+		jwt: token
+	})
+;
+
+export const setUser = (user: ClientUser) =>
+	setModel({
+		state: 'logged',
+		user
+	})
+;
+
+export const init = () => notifyObservers(getModel());

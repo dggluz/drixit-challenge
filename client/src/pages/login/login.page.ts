@@ -1,14 +1,14 @@
 import { EmailFormComponent } from '../../components/email-form/email-form.component';
 import { ErrorLabelComponent } from '../../components/error-label/error-label.component';
 import { PasswordFormComponent } from '../../components/password-form/password-form.component';
-import { Model } from '../../model/model';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
 import { requestToken } from '../../services/service';
+import { setToken } from '../../model/model';
 
 const html = readHtmlFile(require('./login.page.html'));
 
-export const renderLogin = (model: Model) => {
+export const renderLogin = () => {
     const $dom = $(html);
 
     const $get = $getBySelector($dom);
@@ -63,7 +63,7 @@ export const renderLogin = (model: Model) => {
             requestToken(emailForm.getEmail(), password)
                 .then(res => {
                     console.log(res)
-                    model.setToken(res.jwt);
+                    setToken(res.jwt);
                 })
                 .catch(showError)
                 .finally(enableForm);
