@@ -1,8 +1,14 @@
+import { readFileSync } from 'fs';
+import { sign } from 'jsonwebtoken';
+import { resolve } from 'path';
 import { createServer, Next, Request, Response, plugins } from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
 import { objOf } from './type-validation/obj-of';
 import { str } from './type-validation/str';
 import { users } from './users';
+
+// TODO: get the secrets path from secrets when dockerizing.
+const JWT_PRIVATE_KEY = readFileSync(resolve(__dirname, str('../../JWT_PRIVATE_KEY')), 'utf-8');
 
 const ping = (req: Request, res: Response, next: Next) => {
     console.log('Ping');
@@ -36,7 +42,17 @@ const authenticate = (req: Request, res: Response, next: Next) => {
         return next();
     }
 
-    res.json({ jwt: 'jwt-token' });
+    // Generate JWT
+    const jwt = sign({
+        email: user.email
+    }, JWT_PRIVATE_KEY);
+
+    res.json({ jwt });
+    next();
+};
+
+const getUserInfo = (req: Request, res: Response, next: Next) => {
+    res.json(users[0]);
     next();
 };
 
@@ -52,8 +68,7 @@ const cors = corsMiddleware({
     allowCredentialsAllOrigins: true
 });
 
-
-server.pre(cors.preflight)
+server.pre(cors.preflight) 
 server.use(cors.actual)
 
 server.use(plugins.bodyParser());
@@ -61,6 +76,8 @@ server.use(plugins.bodyParser());
 server.get('/ping', ping);
 
 server.post('/api/v0/authenticate', authenticate);
+
+server.get('/api/v0/users/me', getUserInfo);
 
 server.listen(8080, () => {
     console.log('%s listening at %s', server.name, server.url);
