@@ -1,6 +1,4 @@
 import { _Promise } from 'error-typed-promise';
-import { JwtPayload, verify, VerifyErrors } from 'jsonwebtoken';
-import { JWT_PRIVATE_KEY } from '../config/jwt-private-key';
 import { NotFoundError, UnauthorizedError, UnprocessableEntityError } from '../errors/http-errors';
 import { TypeValidationError } from '../errors/type-validation-error';
 import { createEndpoint } from '../server-utils/create-endpoint';
@@ -13,22 +11,7 @@ import { users } from '../users';
 import { omit } from '../utils/omit';
 import { rejectIf } from '../utils/reject-if';
 import { validateType } from '../utils/validate-type';
-
-const verifyToken = (jwtToken: string) =>
-    new _Promise<JwtPayload, VerifyErrors>((resolve, reject) => {
-        verify(jwtToken, JWT_PRIVATE_KEY, (err, payload) => {
-            if (err) {
-                reject(err);
-            }
-            else if (payload) {
-                resolve(payload);
-            }
-            else {
-                throw new Error('Should never happen: jsonwebtoken.verify');
-            }
-        })
-    })
-;
+import { verifyToken } from '../jwt-utils/verify-token';
 
 export const getUserInfo = createEndpoint((req) => 
     _Promise

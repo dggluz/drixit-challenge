@@ -1,6 +1,4 @@
 import { _Promise } from 'error-typed-promise';
-import { sign } from 'jsonwebtoken';
-import { JWT_PRIVATE_KEY } from '../config/jwt-private-key';
 import { BadRequestError } from '../errors/http-errors';
 import { checkBody } from '../middlewares/check-body.middleware';
 import { createEndpoint } from '../server-utils/create-endpoint';
@@ -9,6 +7,7 @@ import { str } from '../type-validation/str';
 import { isNotDefined } from '../type-validation/undef';
 import { users } from '../users';
 import { rejectIf } from '../utils/reject-if';
+import { createToken } from '../jwt-utils/create-token';
 
 const lookupUser = (email: string, password: string) =>
     users.find(user =>
@@ -28,11 +27,7 @@ export const authenticateController = createEndpoint(req =>
             isNotDefined,
             () => new BadRequestError('User/password combination not found', 'INVALID_USER_AUTH')
         ))
-        .then(user => sign({
-                email: user.email
-            }, JWT_PRIVATE_KEY)
-        )
-        .then(jwt => ({
-            jwt
+        .then(({ email }) => createToken({
+            email
         }))
 );
