@@ -6,7 +6,9 @@ import { checkBody } from '../middlewares/check-body.middleware';
 import { createEndpoint } from '../server-utils/create-endpoint';
 import { objOf } from '../type-validation/obj-of';
 import { str } from '../type-validation/str';
+import { isNotDefined } from '../type-validation/undef';
 import { users } from '../users';
+import { rejectIf } from '../utils/reject-if';
 
 const lookupUser = (email: string, password: string) =>
     users.find(user =>
@@ -14,26 +16,8 @@ const lookupUser = (email: string, password: string) =>
     )
 ;
 
-type RejectIf = {
-    <T, U extends T, E> (condition: (x: T) => x is U, errorGen: (x: U) => E): (x: T) => _Promise<Exclude<T, U>, E>;
-    <T, E> (condition: (x: T) => boolean, errorGen: (x: T) => E): (x: T) => _Promise<T, E>;
-}
-
-const rejectIf: RejectIf = <T, E> (condition: (x: T) => boolean, errorGen: (x: T) => E) =>
-    (x: T): any =>
-        condition(x) ?
-            _Promise.reject(errorGen(x)) :
-            _Promise.resolve(x)
-;
-
-const isNotDefined = <T> (x: T | undefined): x is undefined =>
-    typeof x === 'undefined'
-;
-
-export const authenticateController = createEndpoint(req => {
-    console.log('Authenticate');
-
-    return _Promise
+export const authenticateController = createEndpoint(req =>
+    _Promise
         .resolve(req)
         .then(checkBody(objOf({
             email: str,
@@ -51,5 +35,4 @@ export const authenticateController = createEndpoint(req => {
         .then(jwt => ({
             jwt
         }))
-    ;
-});
+);
