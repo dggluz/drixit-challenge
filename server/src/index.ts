@@ -1,60 +1,13 @@
 import { _Promise } from 'error-typed-promise';
-import { readFileSync } from 'fs';
-import { sign, verify } from 'jsonwebtoken';
-import { resolve } from 'path';
+import { verify } from 'jsonwebtoken';
 import { createServer, Next, Request, Response, plugins } from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
-import { createEndpoint } from './server-utils/create-endpoint';
+import { JWT_PRIVATE_KEY } from './config/jwt-private-key';
+import { authenticateController } from './controllers/authenticate-controller';
+import { pingController } from './controllers/ping';
 import { objOf } from './type-validation/obj-of';
 import { str } from './type-validation/str';
 import { users } from './users';
-
-// TODO: get the secrets path from secrets when dockerizing.
-const JWT_PRIVATE_KEY = readFileSync(resolve(__dirname, str('../../JWT_PRIVATE_KEY')), 'utf-8');
-
-const pingController = (req: Request) => {
-    console.log('GET /ping');
-    return _Promise.resolve(req)
-        .then(() => ({
-            connection: true
-        }))
-    ;
-};
-
-const lookupUser = (email: string, password: string) =>
-    users.find(user =>
-        user.email === email && user.password === password
-    )
-;
-
-const authenticate = (req: Request, res: Response, next: Next) => {
-    console.log('Authenticate');
-    
-    const body = objOf({
-        email: str,
-        password: str
-    }) (req.body);
-    
-    console.log(body);
-
-    const user = lookupUser(body.email, body.password);
-
-    if (!user) {
-        res.json(400, {
-            errorCode: 'INVALID_USER_AUTH',
-            status: 'ERROR'
-        });
-        return next();
-    }
-
-    // Generate JWT
-    const jwt = sign({
-        email: user.email
-    }, JWT_PRIVATE_KEY);
-
-    res.json({ jwt });
-    next();
-};
 
 const omit = <T extends Record<PropertyKey, any>> (ommitedKey: keyof T, obj: T) => {
     const { [ommitedKey]: ommited, ...ret} = obj;
@@ -120,9 +73,9 @@ server.use(cors.actual)
 server.use(plugins.bodyParser());
 
 
-server.get('/ping', createEndpoint(pingController));
+server.get('/ping', pingController);
 
-server.post('/api/v0/authenticate', authenticate);
+server.post('/api/v0/authenticate', authenticateController);
 
 server.get('/api/v0/users/me', getUserInfo);
 

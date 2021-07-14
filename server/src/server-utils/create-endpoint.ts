@@ -1,7 +1,6 @@
 import { unknownError, _Promise } from 'error-typed-promise';
 import { Next, Request, Response } from 'restify';
-
-type HttpError = never;
+import { HttpErrors } from '../errors/http-errors';
 
 const tap = <T> (fn: (x: T) => any) =>
     (x: T) => {
@@ -17,7 +16,7 @@ const tapCatch = <E> (fn: (err: E) => any) =>
     }
 ;
 
-export const createEndpoint = <T> (controller: (req: Request) => _Promise<T, unknownError>) =>
+export const createEndpoint = <T> (controller: (req: Request) => _Promise<T, HttpErrors | unknownError>) =>
     (req: Request, res: Response, next: Next) => {
         return controller(req)
             .then(x => x)
