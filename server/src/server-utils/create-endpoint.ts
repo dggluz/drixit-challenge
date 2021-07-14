@@ -9,7 +9,7 @@ export const createEndpoint = <T> (controller: (req: Request) => _Promise<T, Htt
     (req: Request, res: Response, next: Next) => {
         return controller(req)
             .then(tap(() => {
-                console.log(`Called ${ req.method } ${ req.path }`)
+                console.log(`Called ${ req.method } ${ req.path() }`)
             }))
             .then(tap(result =>
                 res.json(200, result)
