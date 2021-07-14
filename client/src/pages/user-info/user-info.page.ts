@@ -1,4 +1,5 @@
-import { ClientUser } from '../../model/model';
+import { ClientUser, reset } from '../../model/model';
+import { clearToken } from '../../persistence/persistence';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
 
@@ -15,6 +16,13 @@ export const renderUserInfo = (userInfo: ClientUser) => {
     $get('.age').text(userInfo.age);
     $get('.email').text(userInfo.email);
     $get('.role').text(userInfo.role === 'admin' ? 'Admin' : 'Regular user');
+
+
+    $get('.log-out').on('click', e => {
+        e.preventDefault();
+        clearToken();
+        reset();
+    });
 
     return $dom;
 };
