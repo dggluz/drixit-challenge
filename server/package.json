@@ -11,6 +11,7 @@
   "author": "Gonzalo Gluzman <dggluz@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "error-typed-promise": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
     "restify": "^8.5.1",
     "restify-cors-middleware2": "^2.1.2"

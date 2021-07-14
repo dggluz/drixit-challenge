@@ -1,8 +1,10 @@
+import { _Promise } from 'error-typed-promise';
 import { readFileSync } from 'fs';
 import { sign, verify } from 'jsonwebtoken';
 import { resolve } from 'path';
 import { createServer, Next, Request, Response, plugins } from 'restify';
 import corsMiddleware from 'restify-cors-middleware2';
+import { createEndpoint } from './server-utils/create-endpoint';
 import { objOf } from './type-validation/obj-of';
 import { str } from './type-validation/str';
 import { users } from './users';
@@ -10,10 +12,13 @@ import { users } from './users';
 // TODO: get the secrets path from secrets when dockerizing.
 const JWT_PRIVATE_KEY = readFileSync(resolve(__dirname, str('../../JWT_PRIVATE_KEY')), 'utf-8');
 
-const ping = (req: Request, res: Response, next: Next) => {
-    console.log('Ping');
-    res.send('pong');
-    next();
+const pingController = (req: Request) => {
+    console.log('GET /ping');
+    return _Promise.resolve(req)
+        .then(() => ({
+            connection: true
+        }))
+    ;
 };
 
 const lookupUser = (email: string, password: string) =>
@@ -98,6 +103,8 @@ const getUserInfo = (req: Request, res: Response, next: Next) => {
     });
 };
 
+// Init server
+
 const server = createServer();
 
 const cors = corsMiddleware({
@@ -112,7 +119,8 @@ server.use(cors.actual)
 
 server.use(plugins.bodyParser());
 
-server.get('/ping', ping);
+
+server.get('/ping', createEndpoint(pingController));
 
 server.post('/api/v0/authenticate', authenticate);
 
