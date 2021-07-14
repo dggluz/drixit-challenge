@@ -51,6 +51,11 @@ const authenticate = (req: Request, res: Response, next: Next) => {
     next();
 };
 
+const omit = <T extends Record<PropertyKey, any>> (ommitedKey: keyof T, obj: T) => {
+    const { [ommitedKey]: ommited, ...ret} = obj;
+    return ret;
+};
+
 const getUserInfo = (req: Request, res: Response, next: Next) => {
     const authHeader = req.header('Authorization', '');
     const bearer = authHeader.slice(0, 7);
@@ -88,7 +93,7 @@ const getUserInfo = (req: Request, res: Response, next: Next) => {
             return next();
         }
 
-        res.send(user);
+        res.send(omit('password', user));
         next();
     });
 };
