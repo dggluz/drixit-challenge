@@ -3,16 +3,7 @@ import { Next, Request, Response } from 'restify';
 import { HttpErrors, isHttpError } from '../errors/http-errors';
 import { tap } from '../utils/tap';
 import { tapCatch } from '../utils/tap-catch';
-
-export const caseError = <ExpectedError, ResolvedResult, RejectedResult>(
-    errPredicate: <E>(err: E | ExpectedError) => err is ExpectedError,
-    errHandler: (err: ExpectedError) => _Promise<ResolvedResult, RejectedResult>
-) => <CurrentError> (err: CurrentError): _Promise<ResolvedResult, RejectedResult | Exclude<CurrentError, ExpectedError>> => {
-    if (errPredicate(err)) {
-        return errHandler(err);
-    }
-    return _Promise.reject(err as Exclude<CurrentError, ExpectedError>);
-};
+import { caseError } from '../utils/case-error';
 
 export const createEndpoint = <T> (controller: (req: Request) => _Promise<T, HttpErrors | unknownError>) =>
     (req: Request, res: Response, next: Next) => {

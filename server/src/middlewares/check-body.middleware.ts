@@ -1,7 +1,7 @@
 import { _Promise } from 'error-typed-promise';
 import { BadRequestError } from '../errors/http-errors';
 import { TypeValidationError } from '../errors/type-validation-error';
-import { caseError } from '../server-utils/create-endpoint';
+import { caseError } from "../utils/case-error";
 import { isInstanceOf } from '../type-validation/is-instance-of';
 import { validateType } from '../utils/validate-type';
 import { _promisify } from '../utils/_promisify';
