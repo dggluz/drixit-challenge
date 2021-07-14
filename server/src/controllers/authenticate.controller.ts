@@ -5,15 +5,12 @@ import { createEndpoint } from '../server-utils/create-endpoint';
 import { objOf } from '../type-validation/obj-of';
 import { str } from '../type-validation/str';
 import { isNotDefined } from '../type-validation/undef';
-import { users } from '../users';
 import { rejectIf } from '../utils/reject-if';
 import { createToken } from '../jwt-utils/create-token';
-
-const lookupUser = (email: string, password: string) =>
-    users.find(user =>
-        user.email === email && user.password === password
-    )
-;
+import { validateUserWithPassword } from '../services/validateUser-with-password';
+import { isInstanceOf } from '../type-validation/is-instance-of';
+import { InvalidUserPasswordError } from '../errors/invalid-user-password.error';
+import { caseError } from '../utils/case-error';
 
 export const authenticateController = createEndpoint(req =>
     _Promise
@@ -22,12 +19,13 @@ export const authenticateController = createEndpoint(req =>
             email: str,
             password: str
         })))
-        .then(({ body }) => lookupUser(body.email, body.password))
-        .then(rejectIf(
-            isNotDefined,
-            () => new BadRequestError('User/password combination not found', 'INVALID_USER_AUTH')
-        ))
+        .then(({ body }) => validateUserWithPassword(body.email, body.password))
         .then(({ email }) => createToken({
             email
         }))
+
+        .catch(caseError(
+            isInstanceOf(InvalidUserPasswordError),
+            () => _Promise.reject(new BadRequestError('User/password combination not found', 'INVALID_USER_AUTH'))
+        ))
 );
