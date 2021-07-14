@@ -12,21 +12,13 @@ import { omit } from '../utils/omit';
 import { rejectIf } from '../utils/reject-if';
 import { validateType } from '../utils/validate-type';
 import { verifyToken } from '../jwt-utils/verify-token';
+import { authenticate } from '../middlewares/authenticate.middleware';
 
 export const getUserInfo = createEndpoint((req) => 
     _Promise
         .resolve(req)
-        // TODO: move authentication to a middleware
-        .then(req => req.header('Authorization', ''))
-        .then(rejectIf(
-            authHeader => authHeader.slice(0, 7) !== 'Bearer ',
-            () => new UnauthorizedError('Bearer token not supplied', 'NOT_AUTHENTICATED')
-        ))
-        .then(authHeader => authHeader.slice(7))
-        .then(jwtToken =>
-            verifyToken(jwtToken)
-                .catch(err => new UnauthorizedError(err, 'INVALID_JWT'))
-        )
+        .then(authenticate)
+        .then(req => req.jwtPayload)
         .then(validateType(objOf({
             email: str
         })))
