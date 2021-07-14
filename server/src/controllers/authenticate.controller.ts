@@ -7,7 +7,7 @@ import { str } from '../type-validation/str';
 import { isNotDefined } from '../type-validation/undef';
 import { rejectIf } from '../utils/reject-if';
 import { createToken } from '../jwt-utils/create-token';
-import { validateUserWithPassword } from '../services/validateUser-with-password';
+import { validateUserWithPassword } from '../services/validate-user-with-password';
 import { isInstanceOf } from '../type-validation/is-instance-of';
 import { InvalidUserPasswordError } from '../errors/invalid-user-password.error';
 import { caseError } from '../utils/case-error';
