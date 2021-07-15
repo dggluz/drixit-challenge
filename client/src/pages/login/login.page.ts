@@ -24,12 +24,12 @@ export const renderLogin = () => {
     const $passwordWrapper = $get('.password-wrapper');
 
     const showPassword = () => {
-        $passwordWrapper.removeClass('invisible');
+        $passwordWrapper.removeClass('d-none');
         passwordForm.focus();
     };
 
     const hidePassword = () => {
-        $passwordWrapper.addClass('invisible');
+        $passwordWrapper.addClass('d-none');
     }
 
     const disableForm = () => {
@@ -48,14 +48,14 @@ export const renderLogin = () => {
             .appendTo(
                 $get('.errors-wrapper')
                     .empty()
-                    .removeClass('invisible')
+                    .removeClass('d-none')
             )
     };
 
     const emptyError = () => {
         $get('.errors-wrapper')
             .empty()
-            .addClass('invisible');
+            .addClass('d-none');
     };
 
     const doLogin = (emailForm: EmailFormComponent, password: string) => {
