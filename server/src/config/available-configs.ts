@@ -3,4 +3,5 @@ export type ConfigName =
     | 'DB_HOST'
     | 'DB_PORT'
     | 'DB_NAME'
+    | 'SERVER_PORT'
 ;
