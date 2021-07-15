@@ -28,6 +28,7 @@ export const createEndpoint = <T> (controller: (req: Request) => _Promise<T, Htt
                 }
             ))
             .catch(tapCatch(err => console.error('Unhandled error!', err)))
+            .catch(tapCatch(() => res.send(500, 'Internal server error')))
             .finally(next)
     }
 ;
