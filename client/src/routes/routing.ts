@@ -1,8 +1,6 @@
-import { getModel } from '../model/model';
-
 export const navigateTo = (path: string) => {
     try {
-        history.pushState(getModel(), '', path);
+        history.pushState({}, '', path);
     }
     catch(e) {
         // Calling history.pushState may fail if the origin is null
@@ -10,5 +8,3 @@ export const navigateTo = (path: string) => {
         // will ignore it
    }
 };
-
-// history.

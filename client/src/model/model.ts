@@ -23,29 +23,29 @@ type Logged = {
 	user: ClientUser;
 };
 
-export type Modelo = NotLogged | JwtAvailable | Logged;
+export type Model = NotLogged | JwtAvailable | Logged;
 
-let modelo: Modelo = {
+let model: Model = {
 	state: 'not-logged'
 };
 
-export const getModel = () =>
-	modelo
+const getModel = () =>
+	model
 ;
 
-const setModel = (newModel: Modelo) => {
-	modelo = newModel;
+const setModel = (newModel: Model) => {
+	model = newModel;
 
 	notifyObservers(getModel());
 };
 
-const observers: ((model: Modelo) => void)[] = [];
+const observers: ((model: Model) => void)[] = [];
 
-const notifyObservers = (model: Modelo) => {
+const notifyObservers = (model: Model) => {
 	observers.forEach(callback => callback(model));
 };
 
-export const subscribe = (callback: (model: Modelo) => void) => {
+export const subscribe = (callback: (model: Model) => void) => {
 	observers.push(callback);
 };
 
@@ -72,13 +72,13 @@ export const setUser = (user: ClientUser) =>
 export const init = () => notifyObservers(getModel());
 
 
-type DiscriminateModel<S extends Modelo['state']> = Extract<Modelo, Record<'state', S>>;
+type DiscriminateModel<S extends Model['state']> = Extract<Model, Record<'state', S>>;
 
-const isState = <S extends Modelo['state']> (state: S, model: Modelo): model is DiscriminateModel<S> =>
+const isState = <S extends Model['state']> (state: S, model: Model): model is DiscriminateModel<S> =>
 		model.state === state
 ;
 
-export const subscribeTo = <S extends Modelo['state']> (state: S, callback: (model: DiscriminateModel<S>) => void) => {
+export const subscribeTo = <S extends Model['state']> (state: S, callback: (model: DiscriminateModel<S>) => void) => {
 		subscribe(model => {
 			if (isState(state, model)) {
 				callback(model);
