@@ -18,14 +18,19 @@ export const createServer = () => {
     server.use(plugins.bodyParser());
 
 
-    server.get('/', function (_req, res, next) {
-        res.redirect('./public/', next);
+    // Setting up static server
+    ['/', '/login', '/get-user-info', '/user-info'].forEach(indexPath => {
+        server.get(indexPath, plugins.serveStatic({
+            directory: resolve(process.cwd(), `./public/`),
+            file: 'index.html',
+            charSet: 'utf-8'
+        }));
     });
 
-    // Setting up static server
-    server.get(`/public/*`, plugins.serveStatic({
-        directory: resolve(process.cwd(), `./public/../`),
-        default: 'index.html'
+    server.get('/build/js/bundle.js', plugins.serveStatic({
+        directory: resolve(process.cwd(), `./public/build/js/`),
+        file: 'bundle.js',
+        charSet: 'utf-8'
     }));
 
     return server;
