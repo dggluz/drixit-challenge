@@ -4,7 +4,7 @@ import { isError } from './is-error';
 export type HttpErrors = BadRequestError | UnauthorizedError | NotFoundError | UnprocessableEntityError;
 
 export const isHttpError: (x: unknown) => x is HttpErrors = (x: any): x is HttpErrors =>
-    '__HttpError' in x && x.__HttpError === 'HttpError'
+    x.hasOwnProperty('__HttpError') && x.__HttpError === 'HttpError'
 ;
 
 abstract class HttpError extends Error {
