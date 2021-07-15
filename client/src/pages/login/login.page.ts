@@ -3,8 +3,14 @@ import { ErrorLabelComponent } from '../../components/error-label/error-label.co
 import { PasswordFormComponent } from '../../components/password-form/password-form.component';
 import { $getBySelector } from '../../utils/$get';
 import { readHtmlFile } from '../../utils/read-html-file';
-import { login } from '../../services/service';
+import { login } from '../../services/login';
 import { setToken } from '../../model/model';
+import { isExpectedResponseError } from '../../services/expected-response.error';
+import { _Promise } from 'error-typed-promise';
+import { assertNever } from '../../utils/assert-never';
+import { tap } from '../../utils/tap';
+import { assertUnknownError } from '../../utils/assert-unknown-error';
+import { tapCatch } from '../../utils/tap-catch';
 
 const html = readHtmlFile(require('./login.page.html'));
 
@@ -50,6 +56,37 @@ export const renderLogin = () => {
             .addClass('invisible');
     };
 
+    const doLogin = (emailForm: EmailFormComponent, password: string) => {
+        login(emailForm.getEmail(), password)
+            .then(tap(({ jwt }) => {
+                setToken(jwt);
+            }))
+            .catch((err) => {
+                if (isExpectedResponseError(err)) {
+                    const { errorCode } = err;
+                    switch (errorCode) {
+                        case 'INVALID_BODY':
+                            showError('There was an error on the request.');
+                            break;
+                        case 'INVALID_USER_AUTH':
+                            showError('Wrong user/password combination');
+                            break;
+                        default:
+                            showError('There was an unexpected error.');
+                            console.error(`Unexpected error code ${errorCode}`);
+                            assertNever(errorCode);
+                            break;
+                    }
+                    return _Promise.resolve(null);
+                }
+    
+                return _Promise.reject(err);
+            })
+            .catch(tapCatch(console.error))
+            .catch(assertUnknownError)
+            .finally(enableForm);
+    }
+
     const emailForm = new EmailFormComponent()
         .subscribe('set-editable', hidePassword)
         .subscribe('set-not-editable', showPassword)
@@ -60,16 +97,9 @@ export const renderLogin = () => {
             disableForm();
             emptyError();
 
-            login(emailForm.getEmail(), password)
-                .then(res => {
-                    console.log(res)
-                    setToken(res.jwt);
-                })
-                .catch(showError)
-                .finally(enableForm);
+            doLogin(emailForm, password);
         })
         .appendTo($passwordWrapper);
 
     return $dom;
 };
-

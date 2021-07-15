@@ -23,6 +23,6 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
-    "error-typed-promise": "^1.0.2"
+    "error-typed-promise": "^1.1.2"
   }
 }
