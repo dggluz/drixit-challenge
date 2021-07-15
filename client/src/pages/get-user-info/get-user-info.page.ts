@@ -3,6 +3,7 @@ import { reset, setUser } from '../../model/model';
 import { clearToken } from '../../persistence/persistence';
 import { isExpectedResponseError } from '../../services/expected-response.error';
 import { getUser } from '../../services/get-user';
+import { $getBySelector } from '../../utils/$get';
 import { assertNever } from '../../utils/assert-never';
 import { assertUnknownError } from '../../utils/assert-unknown-error';
 import { readHtmlFile } from '../../utils/read-html-file';
@@ -16,9 +17,20 @@ require('./get-user-info.page.less');
 export const renderGetUserInfo = (jwt: string) => {
     const $dom = $(html);
 
-    // TODO: show error to user
+    const $get = $getBySelector($dom);
+
     const showError = (error: string) => {
-        console.error(error);
+        $get('.loading-wrapper').addClass('d-none');
+        $get('.error-wrapper').removeClass('d-none');
+        $get('.error-message').text(error);
+
+        $get('.accept-error').on('click', e => {
+            e.preventDefault();
+
+            // Restart the app as this state is not recoverable
+            clearToken();
+            reset();
+        });
     };
 
     getUser(jwt)
@@ -26,7 +38,6 @@ export const renderGetUserInfo = (jwt: string) => {
         .catch((err) => {
             if (isExpectedResponseError(err)) {
                 const { errorCode } = err;
-                // "NOT_AUTHENTICATED" | "INVALID_JWT
                 switch (errorCode) {
                     case 'INVALID_JWT_PAYLOAD':
                         showError('The JWT payload is incorrect');
@@ -46,10 +57,6 @@ export const renderGetUserInfo = (jwt: string) => {
                         assertNever(errorCode);
                         break;
                 }
-
-                // Restart the app as this state is not recoverable
-                clearToken();
-                reset();
         
                 return _Promise.resolve(null);
             }
