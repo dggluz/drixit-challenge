@@ -6,8 +6,10 @@ import { getUser } from '../../services/get-user';
 import { $getBySelector } from '../../utils/$get';
 import { assertNever } from '../../utils/assert-never';
 import { assertUnknownError } from '../../utils/assert-unknown-error';
+import { ignoreErrors } from '../../utils/ignore-errors';
 import { readHtmlFile } from '../../utils/read-html-file';
 import { tapCatch } from '../../utils/tap-catch';
+import { TypeValidationError } from '../../utils/validate-type';
 
 const html = readHtmlFile(require('./get-user-info.page.html'));
 
@@ -63,7 +65,8 @@ export const renderGetUserInfo = (jwt: string) => {
 
             return _Promise.reject(err);
         })
-        .catch(tapCatch(console.error))
+        .catch(tapCatch(err => console.error(err)))
+        .catch(ignoreErrors([TypeValidationError]))
         .catch(assertUnknownError)
     ;
 

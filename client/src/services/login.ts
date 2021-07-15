@@ -4,6 +4,7 @@ import { caseError } from '../utils/case-error';
 import { isExpectedResponseError } from './expected-response.error';
 import { expectErrors } from './expect-errors';
 import { request } from './request';
+import { validateType } from '../utils/validate-type';
 
 export const login = (email: string, password: string) =>
     request('/api/v0/authenticate', {
@@ -13,9 +14,9 @@ export const login = (email: string, password: string) =>
             password
         })
     })
-        .then(objOf({
+        .then(validateType(objOf({
             jwt: str
-        }))
+        })))
         .catch(caseError(
             isExpectedResponseError,
             expectErrors<'INVALID_BODY' | 'INVALID_USER_AUTH'>()

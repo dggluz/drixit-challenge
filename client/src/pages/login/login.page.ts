@@ -11,6 +11,8 @@ import { assertNever } from '../../utils/assert-never';
 import { tap } from '../../utils/tap';
 import { assertUnknownError } from '../../utils/assert-unknown-error';
 import { tapCatch } from '../../utils/tap-catch';
+import { ignoreErrors } from '../../utils/ignore-errors';
+import { TypeValidationError } from '../../utils/validate-type';
 
 const html = readHtmlFile(require('./login.page.html'));
 
@@ -82,7 +84,8 @@ export const renderLogin = () => {
     
                 return _Promise.reject(err);
             })
-            .catch(tapCatch(console.error))
+            .catch(tapCatch(err => console.error(err)))
+            .catch(ignoreErrors([TypeValidationError]))
             .catch(assertUnknownError)
             .finally(enableForm);
     }
