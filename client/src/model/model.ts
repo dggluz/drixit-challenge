@@ -29,7 +29,7 @@ let modelo: Modelo = {
 	state: 'not-logged'
 };
 
-const getModel = () =>
+export const getModel = () =>
 	modelo
 ;
 
