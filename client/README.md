@@ -10,4 +10,4 @@ I used to code framework-less frontends using a kind of object oriented MVC patt
 
 ## Components and pages
 
-I organized the UI with pages and components. Pages are supposed to be simple enough that they can live inside a pure function. Components are objects that maintain a little bit of state. Both, pages and components, have associated HTML and, sometimes, styles to them. The styles and elements selection is scoped to the them to avoid unwanted interactions.
+I organized the UI with [pages](./src/pages) and [components](./src/components). Pages are supposed to be simple enough that they can live inside a pure function. Components are objects that maintain a little bit of state. Both, pages and components, have associated HTML and, sometimes, styles to them. The styles and elements selection is scoped to the them to avoid unwanted interactions.
