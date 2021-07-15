@@ -13,8 +13,10 @@ import { findUserByEmail } from '../services/find-user-by-email';
 import { InexistentUserError } from '../errors/inexistent-user.error';
 import { ignoreErrors } from '../utils/ignore-errors';
 import { NotAvailableConfigError } from '../errors/not-available-config.error';
+import { InvalidDocumentError } from '../errors/invalid-document.error';
+import { MongoError } from '../errors/mongo.error';
 
-export const getUserInfo = createEndpoint((req) => 
+export const getUserInfo = createEndpoint((req) =>
     _Promise
         .resolve(req)
         .then(authenticate)
@@ -34,5 +36,5 @@ export const getUserInfo = createEndpoint((req) =>
             isInstanceOf(InexistentUserError),
             () => _Promise.reject(new NotFoundError('There is no user with the given email', 'INEXISTENT_USER'))
         ))
-        .catch(ignoreErrors([NotAvailableConfigError]))
+        .catch(ignoreErrors([NotAvailableConfigError, InvalidDocumentError, MongoError]))
 );

@@ -1,1 +1,6 @@
-export type ConfigName = 'JWT_PRIVATE_KEY';
+export type ConfigName =
+    'JWT_PRIVATE_KEY'
+    | 'DB_HOST'
+    | 'DB_PORT'
+    | 'DB_NAME'
+;

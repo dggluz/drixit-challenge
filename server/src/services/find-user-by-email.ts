@@ -1,14 +1,18 @@
 import { _Promise } from 'error-typed-promise';
+import { DocumentDoesNotExistError } from '../errors/document-does-not-exist.error';
 import { InexistentUserError } from '../errors/inexistent-user.error';
-import { isNotDefined } from '../type-validation/undef';
-import { users } from '../users';
-import { rejectIf } from '../utils/reject-if';
+import { isInstanceOf } from '../type-validation/is-instance-of';
+import { caseError } from '../utils/case-error';
+import { findUser } from './find-user';
 
 export const findUserByEmail = (email: string) =>
-    _Promise
-        .resolve(users.find(user => user.email === email))
-        .then(rejectIf(
-            isNotDefined,
-            () => new InexistentUserError(email)
+    findUser({
+        email
+    })
+        .then(x => x)
+        .catch(caseError(
+            isInstanceOf(DocumentDoesNotExistError),
+            () => _Promise.reject(new InexistentUserError(email))
         ))
+        .then(x => x)
 ;
