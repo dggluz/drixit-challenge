@@ -1,10 +1,11 @@
 import { _Promise } from 'error-typed-promise';
 import { sign } from 'jsonwebtoken';
-import { JWT_PRIVATE_KEY } from '../config/jwt-private-key';
+import { getConfig } from '../config/get-config';
 
-export const createToken = (data: string | object | Buffer) => _Promise
-    .resolve(sign(data, JWT_PRIVATE_KEY))
-    .then(jwt => ({
-        jwt
-    }))
+export const createToken = (data: string | object | Buffer) =>
+    getConfig('JWT_PRIVATE_KEY')
+        .then(key => sign(data, key))
+        .then(jwt => ({
+            jwt
+        }))
 ;

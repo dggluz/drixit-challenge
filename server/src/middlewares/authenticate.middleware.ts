@@ -2,7 +2,10 @@ import { _Promise } from 'error-typed-promise';
 import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'restify';
 import { UnauthorizedError } from '../errors/http-errors';
+import { JwtVerifyError } from '../errors/jwt-verify.error';
 import { verifyToken } from '../jwt-utils/verify-token';
+import { isInstanceOf } from '../type-validation/is-instance-of';
+import { caseError } from '../utils/case-error';
 import { rejectIf } from '../utils/reject-if';
 
 export const authenticate = <R extends Request>(req: R) =>
@@ -16,7 +19,10 @@ export const authenticate = <R extends Request>(req: R) =>
         .then(authHeader => authHeader.slice(7))
         .then(jwtToken =>
             verifyToken(jwtToken)
-                .catch(err => _Promise.reject(new UnauthorizedError(err, 'INVALID_JWT')))
+                .catch(caseError(
+                    isInstanceOf(JwtVerifyError),
+                    err => _Promise.reject(new UnauthorizedError(err, 'INVALID_JWT'))
+                ))
         )
         .then(jwtPayload => {
             (req as any).jwtPayload = jwtPayload;

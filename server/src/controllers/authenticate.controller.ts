@@ -11,6 +11,8 @@ import { validateUserWithPassword } from '../services/validate-user-with-passwor
 import { isInstanceOf } from '../type-validation/is-instance-of';
 import { InvalidUserPasswordError } from '../errors/invalid-user-password.error';
 import { caseError } from '../utils/case-error';
+import { ignoreErrors } from '../utils/ignore-errors';
+import { NotAvailableConfigError } from '../errors/not-available-config.error';
 
 export const authenticateController = createEndpoint(req =>
     _Promise
@@ -28,4 +30,5 @@ export const authenticateController = createEndpoint(req =>
             isInstanceOf(InvalidUserPasswordError),
             () => _Promise.reject(new BadRequestError('User/password combination not found', 'INVALID_USER_AUTH'))
         ))
+        .catch(ignoreErrors([NotAvailableConfigError]))
 );

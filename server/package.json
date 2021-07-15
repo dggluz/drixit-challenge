@@ -11,6 +11,7 @@
   "author": "Gonzalo Gluzman <dggluz@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "error-typed-promise": "^1.1.2",
     "jsonwebtoken": "^8.5.1",
     "restify": "^8.5.1",

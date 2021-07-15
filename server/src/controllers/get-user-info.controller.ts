@@ -11,6 +11,8 @@ import { validateType } from '../utils/validate-type';
 import { authenticate } from '../middlewares/authenticate.middleware';
 import { findUserByEmail } from '../services/find-user-by-email';
 import { InexistentUserError } from '../errors/inexistent-user.error';
+import { ignoreErrors } from '../utils/ignore-errors';
+import { NotAvailableConfigError } from '../errors/not-available-config.error';
 
 export const getUserInfo = createEndpoint((req) => 
     _Promise
@@ -32,4 +34,5 @@ export const getUserInfo = createEndpoint((req) =>
             isInstanceOf(InexistentUserError),
             () => _Promise.reject(new NotFoundError('There is no user with the given email', 'INEXISTENT_USER'))
         ))
+        .catch(ignoreErrors([NotAvailableConfigError]))
 );
